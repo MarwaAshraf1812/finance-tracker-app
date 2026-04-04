@@ -11,3 +11,10 @@ export const getAllRecurring = (userId) => {
 export const getRecurringById = (id) => {
   return RecurringTransaction.findById(id);
 };
+
+export const updateRecurring = (id, data) => {
+  return RecurringTransaction.findByIdAndUpdate(id, data, {
+    new: true,
+    runValidators: true,
+  });
+};
