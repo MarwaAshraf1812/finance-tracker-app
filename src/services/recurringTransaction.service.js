@@ -7,3 +7,7 @@ export const createRecurring = async (data) => {
 export const getAllRecurring = (userId) => {
   return RecurringTransaction.find({ user: userId });
 };
+
+export const getRecurringById = (id) => {
+  return RecurringTransaction.findById(id);
+};

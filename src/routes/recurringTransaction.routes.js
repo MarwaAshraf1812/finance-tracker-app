@@ -8,4 +8,6 @@ router
   .get(controller.getAllRecurring)
   .post(controller.createRecurring);
 
+router.route("/:id").get(controller.getRecurringById);
+
 export default router;

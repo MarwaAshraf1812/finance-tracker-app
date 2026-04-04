@@ -18,7 +18,22 @@ export const getAllRecurring = async (req, res) => {
   const userId = req.user?.id || "507f191e810c19729de860ea";
   const data = await recurringService.getAllRecurring(userId);
 
-  res.status(201).json({
+  res.status(200).json({
+    success: true,
+    data,
+  });
+};
+
+export const getRecurringById = async (req, res) => {
+  const data = await recurringService.getRecurringById(req.params.id);
+
+  if (!data) {
+    const err = new Error("Recurring not found");
+    err.statusCode = 404;
+    throw err;
+  }
+
+  res.status(200).json({
     success: true,
     data,
   });
