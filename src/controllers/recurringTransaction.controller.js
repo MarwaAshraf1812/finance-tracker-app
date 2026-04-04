@@ -13,3 +13,13 @@ export const createRecurring = async (req, res) => {
     data: recurring,
   });
 };
+
+export const getAllRecurring = async (req, res) => {
+  const userId = req.user?.id || "507f191e810c19729de860ea";
+  const data = await recurringService.getAllRecurring(userId);
+
+  res.status(201).json({
+    success: true,
+    data,
+  });
+};
