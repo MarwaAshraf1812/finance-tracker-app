@@ -19,7 +19,8 @@ export const createRecurring = async (req, res) => {
 
 export const getAllRecurring = async (req, res) => {
   const userId = req.user?.id || "507f191e810c19729de860ea";
-  const data = await recurringService.getAllRecurring(userId);
+
+  const data = await recurringService.getAllTransactions(userId, req.query);
 
   res.status(200).json({
     success: true,
