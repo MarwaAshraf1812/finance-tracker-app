@@ -11,6 +11,7 @@ router
 router
   .route("/:id")
   .get(controller.getRecurringById)
-  .put(controller.updateRecurring);
+  .put(controller.updateRecurring)
+  .delete(controller.deleteRecurring);
 
 export default router;

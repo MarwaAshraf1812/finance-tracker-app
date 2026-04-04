@@ -18,3 +18,7 @@ export const updateRecurring = (id, data) => {
     runValidators: true,
   });
 };
+
+export const deleteRecurring = (id) => {
+  return RecurringTransaction.findByIdAndDelete(id);
+};

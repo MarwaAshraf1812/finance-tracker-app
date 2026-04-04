@@ -58,3 +58,18 @@ export const updateRecurring = async (req, res) => {
     data,
   });
 };
+
+export const deleteRecurring = async (req, res) => {
+  const data = await recurringService.deleteRecurring(req.params.id);
+
+  if (!data) {
+    const err = new Error("Recurring not found");
+    err.statusCode = 404;
+    throw err;
+  }
+
+  res.status(200).json({
+    success: true,
+    data,
+  });
+};
