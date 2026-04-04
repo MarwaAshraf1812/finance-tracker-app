@@ -1,30 +1,37 @@
+import Joi from "joi";
+
 export const errorHandler = (err, req, res, next) => {
-  let statusCode = err.status|| 500;
+  let statusCode = err.status || 500;
   let message = err.message || "Internal Server Error";
 
-  if(err.name === 'CastError') {
+  if (err.name === "CastError") {
     statusCode = 404;
     message = "Resource not found";
   }
 
-  if(err.code === 11000) {
+  if (err.code === 11000) {
     statusCode = 400;
     message = "Resource already exists";
   }
 
-  if(err.name === 'ValidationError') {
+  if (err.name === "ValidationError") {
     statusCode = 400;
     message = "Validation error";
   }
 
-  if(err.name === 'JsonWebTokenError') {
+  if (err.name === "JsonWebTokenError") {
     statusCode = 401;
     message = "Invalid token";
   }
 
-  if(err.name === 'TokenExpiredError') {
+  if (err.name === "TokenExpiredError") {
     statusCode = 401;
     message = "Token expired";
+  }
+
+  if (Joi.isError(err)) {
+    statusCode = 400;
+    message = err.details.map((detail) => detail.message).join(",");
   }
 
   res.status(statusCode).json({
