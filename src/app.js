@@ -7,6 +7,7 @@ import connectDB from "./config/dbConfig.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import { globalLimiter } from "./middlewares/rateLimit.middleware.js";
 import recurringRoutes from "./routes/recurringTransaction.routes.js";
+import { startRecurringJob } from "./utils/recurringCron.js";
 
 const app = express();
 
@@ -41,4 +42,5 @@ app.use((req, res, next) => {
 
 app.use(errorHandler);
 
+startRecurringJob();
 export default app;
