@@ -5,6 +5,9 @@ import morgan from 'morgan';
 import cookieParser from "cookie-parser";
 import connectDB from "./config/dbConfig.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
+import authRoutes from "./routes/auth.routes.js";
+import userRoutes from "./routes/user.routes.js";
+
 
 const app = express();
 
@@ -25,6 +28,11 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
+
+
 
 
 app.use((req, res, next) => {
