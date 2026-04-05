@@ -1,0 +1,55 @@
+import { createError } from "../utils/error.js";
+import { genToken } from "../utils/token.js";
+import { comparePassword } from "../utils/hash.js";
+import { User } from "../models/user.model.js";
+
+
+export const registerUser = async ( userData) => {
+  const user = new User(userData);
+  await user.save();
+  const token = genToken(user);
+  return { user, token };
+};
+
+export const loginUser = async ({ email, password }) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    return { user: null, token: null };
+  }
+  const isMatch = await comparePassword(password, user.password);
+  if (!isMatch) {
+    return { user: null, token: null };
+  }
+  const token = genToken(user);
+  return { user, token };
+};
+
+export const resetPassword = async (email) => {
+  const user = await User.findOne({ email });
+  if(user) {
+    user.passwordResetToken = genToken(user);
+    user.passwordResetExpires = Date.now() +  10 * 60 * 1000; // 10 minutes
+  } else {
+    throw createError(404 , "User not found");
+  }
+  await user.save();
+  return user;
+}
+
+export const resetPasswordConfirm = async (token, newPassword) => {
+  const user = await User.findOne({
+    passwordResetToken: token,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+  if(user) {
+    user.password = newPassword;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+  } else {
+    throw createError(401 , "Invalid or expired token");
+  }
+  await user.save();
+  return user;
+}
+
+export const findUserByEmail = (email) => User.findOne({ email });
