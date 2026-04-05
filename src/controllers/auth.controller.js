@@ -10,18 +10,18 @@ export const registerUser = async (req, res, next) => {
     if(exist){
         throw createError(400 , "Email already exists")
     }
-    const { user , token } = await authService.registerUser({name , email , password});
-    addTokenToCookie(token , res);
+    const { user , token , refreshToken } = await authService.registerUser({name , email , password});
+    addTokenToCookie(token , refreshToken , res);
     res.status(201).json({success: true , user, token});
 }
 
 export const loginUser = async (req, res, next) => {
     const { email, password } = req.body;
-    const { user, token } = await authService.loginUser({email , password});
+    const { user, token , refreshToken } = await authService.loginUser({email , password});
     if(!user){
         throw createError(401 , "Invalid email or password")
     }
-    addTokenToCookie(token , res);
+    addTokenToCookie(token , refreshToken , res);
     res.status(200).json({success: true , user , token });
 }
 

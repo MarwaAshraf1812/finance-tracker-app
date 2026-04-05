@@ -1,16 +1,24 @@
 import jwt from "jsonwebtoken";
 
-export const addTokenToCookie = (token , res) => {
+export const addTokenToCookie = (token , refreshToken , res) => {
   res.cookie("token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     maxAge: 7 * 24 * 60 * 60 * 1000,
     sameSite: "strict",
   });
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    sameSite: "strict",
+  });
 };
 
 export const removeTokenFromCookie = (res) => {
   res.clearCookie("token");
+  res.clearCookie("refreshToken");
 };
 
 export const genToken = (user) => {
@@ -19,7 +27,12 @@ export const genToken = (user) => {
     process.env.JWT_SECRET,
     { expiresIn: process.env.JWT_EXPIRES_IN },
   );
-  return token;
+  const refreshToken = jwt.sign(
+    { id: user._id },
+    process.env.JWT_SECRET,
+    { expiresIn: "30d" },
+  );
+  return {token, refreshToken};
 };
 
 export const verifyToken = (token) => {
