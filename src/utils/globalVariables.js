@@ -1,6 +1,8 @@
 import joi from "joi";
 import { isValidObjectId } from "mongoose";
 
+export const userRoles = ["user", "admin"];
+
 export const defaultAvatar = { 
     secure_url : "https://res.cloudinary.com/dqnbkkjzu/image/upload/v1747832770/defult_fdkxtu.jpg",
     public_id : "defult_fdkxtu"

@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 import { hashPassword } from "../utils/hash.js";
 import { defaultAvatar } from "../utils/globalVariables.js";
+import { userRoles } from "../utils/globalVariables.js";
 
 const userSchema = new Schema(
   {
@@ -19,7 +20,7 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ["user", "admin"],
+      enum: userRoles,
       default: "user",
     },
     blocked: {
