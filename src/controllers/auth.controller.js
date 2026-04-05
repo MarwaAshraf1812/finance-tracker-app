@@ -2,6 +2,7 @@ import * as authService from "../services/auth.service.js";
 import { createError } from "../utils/error.js";
 import { addTokenToCookie , removeTokenFromCookie} from "../utils/token.js";
 import { sendEmail } from "../utils/email.js";
+import { genToken } from "../utils/token.js";
 
 
 export const registerUser = async (req, res, next) => {
@@ -65,3 +66,17 @@ export const resetPasswordConfirm = async (req, res, next) => {
     res.status(200).json({success: true , message: "Password reset successfully" });
 }
 
+export const refreshToken = async (req, res, next) => {
+    let { refreshToken } = req.cookies;
+    if (!refreshToken) {
+        throw createError(401, "No refresh token provided");
+    }
+    const user = await authService.findUserByRefreshToken(refreshToken);
+    
+    if (!user) {
+        throw createError(401, "Invalid refresh token");
+    }
+    const { token: newToken, refreshToken: newRefreshToken } = genToken(user);
+    addTokenToCookie(newToken, newRefreshToken, res);
+    res.status(200).json({ success: true, token: newToken });
+}

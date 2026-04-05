@@ -12,5 +12,6 @@ router.post("/logout", authController.logoutUser);
 router.post("/register-admin", validation(registerSchema), authController.registerAdmin);
 router.post("/reset-password",validation(resetPasswordSchema),authController.resetPassword);
 router.post("/reset-password-confirm/:token", validation(resetPasswordConfirmSchema), authController.resetPasswordConfirm);
+router.post("/refresh-token", authController.refreshToken);
 
 export default router;
