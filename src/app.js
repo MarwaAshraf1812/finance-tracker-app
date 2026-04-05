@@ -7,7 +7,7 @@ import connectDB from "./config/dbConfig.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
-import { globalLimiter } from "./middlewares/rateLimiter.middleware.js";
+import { globalLimiter } from "./middlewares/rateLimit.middleware.js";
 const app = express();
 
 connectDB();
