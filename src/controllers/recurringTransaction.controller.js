@@ -1,4 +1,5 @@
 import * as recurringService from "../services/recurringTransaction.service.js";
+import { createError } from "../utils/error.js";
 
 export const createRecurring = async (req, res) => {
   const userId = req.user.id;
@@ -24,12 +25,13 @@ export const getAllRecurring = async (req, res) => {
 };
 
 export const getRecurringById = async (req, res) => {
-  const data = await recurringService.getRecurringById(req.params.id);
+  const data = await recurringService.getRecurringById(
+    req.params.id,
+    req.user.id,
+  );
 
   if (!data) {
-    const err = new Error("Recurring not found");
-    err.statusCode = 404;
-    throw err;
+    throw createError(404, "Recurring not found");
   }
 
   res.status(200).json({
@@ -39,12 +41,14 @@ export const getRecurringById = async (req, res) => {
 };
 
 export const updateRecurring = async (req, res) => {
-  const data = await recurringService.updateRecurring(req.params.id, req.body);
+  const data = await recurringService.updateRecurring(
+    req.params.id,
+    req.user.id,
+    req.body,
+  );
 
   if (!data) {
-    const err = new Error("Recurring not found");
-    err.statusCode = 404;
-    throw err;
+    throw createError(404, "Recurring not found");
   }
 
   res.status(200).json({
@@ -54,12 +58,13 @@ export const updateRecurring = async (req, res) => {
 };
 
 export const deleteRecurring = async (req, res) => {
-  const data = await recurringService.deleteRecurring(req.params.id);
+  const data = await recurringService.deleteRecurring(
+    req.params.id,
+    req.user.id,
+  );
 
   if (!data) {
-    const err = new Error("Recurring not found");
-    err.statusCode = 404;
-    throw err;
+    throw createError(404, "Recurring not found");
   }
 
   res.status(200).json({

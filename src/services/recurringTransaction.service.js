@@ -24,17 +24,26 @@ export const getAllTransactions = async (userId, queryString) => {
   return transactions;
 };
 
-export const getRecurringById = (id) => {
-  return RecurringTransaction.findById(id);
+export const getRecurringById = async (id, userId) => {
+  const data = await RecurringTransaction.find({ _id: id, user: userId });
+  if (!data) return null;
+  return data[0];
 };
 
-export const updateRecurring = (id, data) => {
-  return RecurringTransaction.findByIdAndUpdate(id, data, {
-    new: true,
-    runValidators: true,
+export const updateRecurring = async (id, userId, data) => {
+  return await RecurringTransaction.findOneAndUpdate(
+    { _id: id, user: userId },
+    data,
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+};
+
+export const deleteRecurring = async (id, userId) => {
+  return await RecurringTransaction.findOneAndDelete({
+    _id: id,
+    user: userId,
   });
-};
-
-export const deleteRecurring = (id) => {
-  return RecurringTransaction.findByIdAndDelete(id);
 };

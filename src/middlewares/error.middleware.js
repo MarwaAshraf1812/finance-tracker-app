@@ -29,8 +29,6 @@ export const errorHandler = (err, req, res, next) => {
     message = "Token expired";
   }
 
-  // console.log(err);
-
   res.status(statusCode).json({
     success: false,
     statusCode,
