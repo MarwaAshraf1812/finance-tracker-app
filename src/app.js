@@ -5,6 +5,9 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import connectDB from "./config/dbConfig.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
+import authRoutes from "./routes/auth.routes.js";
+import userRoutes from "./routes/user.routes.js";
+import categoriesRouter from "./routes/category.routes.js";
 import { globalLimiter } from "./middlewares/rateLimit.middleware.js";
 import recurringRoutes from "./routes/recurringTransaction.routes.js";
 import { startRecurringJob } from "./utils/recurringCron.js";
@@ -34,6 +37,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
+app.use("/api/v1/categories", categoriesRouter);
 app.use("/api/v1/recurring", recurringRoutes);
 
 app.use((req, res, next) => {
