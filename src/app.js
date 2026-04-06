@@ -8,6 +8,8 @@ import { errorHandler } from "./middlewares/error.middleware.js";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import categoriesRouter from "./routes/category.routes.js";
+import transactionsRouter from "./routes/transaction.routes.js";
+import budgetsRouter from "./routes/budget.routes.js";
 import { globalLimiter } from "./middlewares/rateLimit.middleware.js";
 
 const app = express();
@@ -38,6 +40,8 @@ app.use(cookieParser());
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/api/v1/categories", categoriesRouter);
+app.use("/api/v1/transactions", transactionsRouter);
+app.use("/api/v1/budgets", budgetsRouter);
 
 app.use((req, res, next) => {
   res.status(404).json({ success: false, message: "Route not found" });
