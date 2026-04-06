@@ -1,55 +1,67 @@
 import Category from "../models/category.model.js";
+import { createError } from "../utils/error.js";
 
-export const createCategory = async (req, res) => {
-  const { type, user, icon, color } = req.body;
+export const createCategory = async (req, res, next) => {
+  const { type, icon, color } = req.body;
   const newCategory = new Category({
     type,
-    user,
+    user: req.user.id,
     icon,
     color,
   });
   await newCategory.save();
-  res.status(201).json({ data: newCategory });
+  res.status(201).json({ success: true, data: newCategory });
 };
 
-export const getAllCategories = async (req, res) => {
-  const categories = await Category.find();
-  res.status(200).json({ data: categories });
+export const getAllCategories = async (req, res, next) => {
+  const categories = await Category.find({
+    $or: [{ user: null }, { user: req.user.id }]
+  });
+  res.status(200).json({ success: true, count: categories.length, data: categories });
 };
 
-export const getCategoryById = async (req, res) => {
+export const getCategoryById = async (req, res, next) => {
   const { id } = req.params;
-
-  if (!id) return res.status(400).json({ message: "category id needed" });
-
   const category = await Category.findById(id);
 
-  if (!category) return res.status(404).json({ message: "category not found" });
+  if (!category) return next(createError(404, "Category not found"));
 
-  return res.status(200).json({ data: category });
+  if (category.user && category.user.toString() !== req.user.id) {
+    return next(createError(403, "Not authorized to access this category"));
+  }
+
+  return res.status(200).json({ success: true, data: category });
 };
 
-export const updateCategory = async (req, res) => {
+export const updateCategory = async (req, res, next) => {
   const { id } = req.params;
+  const category = await Category.findById(id);
 
-  if (!id) return res.status(400).json({ message: "category id needed" });
+  if (!category) return next(createError(404, "Category not found"));
 
-  const category = await Category.findByIdAndUpdate(id, req.body, {
+  if (!category.user || category.user.toString() !== req.user.id) {
+    return next(createError(403, "Not authorized to update this category"));
+  }
+
+  const updatedCategory = await Category.findByIdAndUpdate(id, req.body, {
     new: true,
+    runValidators: true
   });
 
-  if (!category) return res.status(404).json({ message: "category not found" });
-
-  res.status(200).json({ data: category });
+  res.status(200).json({ success: true, data: updatedCategory });
 };
 
-export const deleteCategory = async (req, res) => {
+export const deleteCategory = async (req, res, next) => {
   const { id } = req.params;
-  if (!id) return res.status(400).json({ message: "category id needed" });
+  const category = await Category.findById(id);
 
-  const deleted = await Category.findByIdAndDelete(id);
+  if (!category) return next(createError(404, "Category not found"));
 
-  if (!deleted) return res.status(404).json({ message: "category not found" });
+  if (!category.user || category.user.toString() !== req.user.id) {
+    return next(createError(403, "Not authorized to delete this category"));
+  }
 
-  return res.status(200).json({ message: "category deleted" });
+  await Category.findByIdAndDelete(id);
+
+  return res.status(200).json({ success: true, message: "Category deleted successfully" });
 };
