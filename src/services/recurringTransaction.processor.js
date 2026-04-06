@@ -1,8 +1,6 @@
 import RecurringTransaction from "../models/recurringTransaction.model.js";
+import Transaction from "../models/transaction.model.js";
 import { calculateNextDate } from "../utils/calculateNextDate.js";
-
-// placeholder until Transaction model finished
-const Transaction = null;
 
 export const processRecurringTransactions = async () => {
   const today = new Date();
@@ -22,7 +20,7 @@ export const processRecurringTransactions = async () => {
         type: r.type,
         category: r.category,
         description: r.description,
-        recurringId: r._id,
+        isRecurring: true,
       });
 
       nextDate = calculateNextDate(nextDate, r.frequency);

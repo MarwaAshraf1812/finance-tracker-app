@@ -42,9 +42,9 @@ app.use(cookieParser());
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/api/v1/categories", categoriesRouter);
-app.use("/api/v1/recurring", recurringRoutes);
 app.use("/api/v1/transactions", transactionsRouter);
 app.use("/api/v1/budgets", budgetsRouter);
+app.use("/api/v1/recurring", recurringRoutes);
 
 app.use((req, res, next) => {
   res.status(404).json({ success: false, message: "Route not found" });
