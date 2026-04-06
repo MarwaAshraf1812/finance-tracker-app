@@ -7,12 +7,12 @@ const Transaction = null;
 export const processRecurringTransactions = async () => {
   const today = new Date();
 
-  const recurrings = await RecurringTransaction.find({
+  const recurring = await RecurringTransaction.find({
     active: true,
     nextDate: { $lte: today },
   });
 
-  for (const r of recurrings) {
+  for (const r of recurring) {
     let nextDate = r.nextDate;
 
     while (nextDate <= today) {

@@ -29,10 +29,7 @@ export const errorHandler = (err, req, res, next) => {
     message = "Token expired";
   }
 
-  if (Joi.isError(err)) {
-    statusCode = 400;
-    message = err.details.map((detail) => detail.message).join(",");
-  }
+  // console.log(err);
 
   res.status(statusCode).json({
     success: false,

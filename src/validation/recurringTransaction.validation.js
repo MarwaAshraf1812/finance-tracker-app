@@ -7,9 +7,10 @@ export const createRecurringSchema = Joi.object({
   frequency: Joi.string().valid("daily", "weekly", "monthly").required(),
   nextDate: Joi.date().required(),
   description: Joi.string().max(200).allow(""),
-});
+}).required();
 
 export const updateRecurringSchema = Joi.object({
+  id: Joi.string().required(),
   amount: Joi.number().min(0),
   type: Joi.string().valid("income", "expense"),
   category: Joi.string(),
@@ -17,4 +18,4 @@ export const updateRecurringSchema = Joi.object({
   nextDate: Joi.date(),
   description: Joi.string().max(200).allow(""),
   active: Joi.boolean(),
-});
+}).required();

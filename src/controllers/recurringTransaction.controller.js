@@ -1,13 +1,8 @@
 import * as recurringService from "../services/recurringTransaction.service.js";
-import {
-  createRecurringSchema,
-  updateRecurringSchema,
-} from "../validations/recurringTransaction.validation.js";
 
 export const createRecurring = async (req, res) => {
-  const value = await createRecurringSchema.validateAsync(req.body || {});
-  const userId = req.user?.id || "507f191e810c19729de860ea";
-  const data = { ...value, user: userId };
+  const userId = req.user.id;
+  const data = { ...req.body, user: userId };
 
   const recurring = await recurringService.createRecurring(data);
 
@@ -18,7 +13,7 @@ export const createRecurring = async (req, res) => {
 };
 
 export const getAllRecurring = async (req, res) => {
-  const userId = req.user?.id || "507f191e810c19729de860ea";
+  const userId = req.user.id;
 
   const data = await recurringService.getAllTransactions(userId, req.query);
 
@@ -44,9 +39,7 @@ export const getRecurringById = async (req, res) => {
 };
 
 export const updateRecurring = async (req, res) => {
-  const value = await updateRecurringSchema.validateAsync(req.body);
-
-  const data = await recurringService.updateRecurring(req.params.id, value);
+  const data = await recurringService.updateRecurring(req.params.id, req.body);
 
   if (!data) {
     const err = new Error("Recurring not found");
