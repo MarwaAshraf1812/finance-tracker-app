@@ -14,6 +14,7 @@ import adminUserRoutes from "./routes/admin.user.routes.js";
 import { globalLimiter } from "./middlewares/rateLimit.middleware.js";
 import recurringRoutes from "./routes/recurringTransaction.routes.js";
 import { startRecurringJob } from "./utils/recurringCron.js";
+import notificationRoutes from "./routes/notification.routes.js";
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use("/api/v1/categories", categoriesRouter);
 app.use("/api/v1/transactions", transactionsRouter);
 app.use("/api/v1/budgets", budgetsRouter);
 app.use("/api/v1/recurring", recurringRoutes);
+app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/admin", adminUserRoutes);
 
 app.use((req, res, next) => {
