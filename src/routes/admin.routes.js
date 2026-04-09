@@ -10,6 +10,7 @@ router.get('/users', authenticate, authorize('admin'), adminController.getUsers)
 router.get('/finance', authenticate, authorize('admin'), adminController.getFinance);
 router.get('/categories', authenticate, authorize('admin'), adminController.getCategories);
 router.get('/trends', authenticate, authorize('admin'), adminController.getTrends);
+router.get('/activity', authenticate, authorize('admin'), adminController.getActivity);
 
 
 export default router;

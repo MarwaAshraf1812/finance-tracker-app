@@ -1,5 +1,5 @@
 import { User } from '../models/user.model.js';
-import { Transaction } from '../models/transaction.model.js';
+import Transaction from '../models/transaction.model.js';
 import logger from '../logger/logger.service.js';
 
 export const getSystemOverview = async () => {
@@ -29,7 +29,6 @@ export const getSystemOverview = async () => {
     throw error;
   }
 }
-
 
 export const getUserAnalytics = async () => {
   try {
@@ -96,7 +95,6 @@ export const getFinanceAnalytics = async () => {
     throw error;
   }
 }
-
 
 export const getTrends = async () => {
   try {
@@ -175,3 +173,51 @@ export const getCategoriesAnalytics = async () => {
     throw error;
   }
 }
+
+export const getActivityMetrics = async () => {
+  try {
+    const stats = await Transaction.aggregate([
+      {
+        $group: {
+          _id: "$user",
+          TransactionsCount: { $sum: 1 },
+          totalSpent: { $sum: { $cond: [{ $eq: ['$type', 'expense'] }, '$amount', 0] } },
+          totalIncome: { $sum: { $cond: [{ $eq: ['$type', 'income'] }, '$amount', 0] } },
+        }
+      },
+      {
+        $sort: { TransactionsCount: -1 }
+      },
+      {
+        $limit: 10
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'userInfo'
+        }
+      },
+      {
+        $unwind: '$userInfo'
+      },
+      {
+        $project: {
+          _id: 0,
+          userId: "$_id",
+          name: "$userInfo.name",
+          email: "$userInfo.email",
+          avatar: "$userInfo.avatar.secure_url",
+          transactionCount: "$TransactionsCount",
+          totalSpent: 1,
+          totalIncome: 1
+        }
+      }
+    ]);
+    return stats;
+  } catch (error) {
+    logger.error(`Error in getActivityMetrics: ${error.message}`);
+    throw error;
+  }
+};

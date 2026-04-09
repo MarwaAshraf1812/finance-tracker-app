@@ -39,3 +39,11 @@ export const getTrends = async(req,res) => {
     data: analytics
   })
 }
+
+export const getActivity = async (req, res) => {
+  const activity = await adminService.getActivityMetrics();
+  res.status(200).json({
+    success: true,
+    data: activity
+  })
+}
