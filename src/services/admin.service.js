@@ -112,8 +112,8 @@ export const getTrends = async () => {
       {
         $group: {
           _id: { month: "$month", year: "$year" },
-          income: { $sum: { $cond: [{ $eq: ['$type', 'income'] }, '$amount', 0] } }, // تم إضافة $ قبل eq
-          expense: { $sum: { $cond: [{ $eq: ['$type', 'expense'] }, '$amount', 0] } }, // تم إضافة $ قبل eq
+          income: { $sum: { $cond: [{ $eq: ['$type', 'income'] }, '$amount', 0] } },
+          expense: { $sum: { $cond: [{ $eq: ['$type', 'expense'] }, '$amount', 0] } },
         }
       },
       { $sort: { "_id.year": 1, "_id.month": 1 } },
