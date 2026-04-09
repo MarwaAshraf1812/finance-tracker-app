@@ -1,5 +1,5 @@
 import { createError } from "../utils/error.js";
-import { genToken } from "../utils/token.js";
+import { genToken, verifyToken } from "../utils/token.js";
 import { comparePassword } from "../utils/hash.js";
 import { User } from "../models/user.model.js";
 
@@ -7,8 +7,8 @@ import { User } from "../models/user.model.js";
 export const registerUser = async ( userData) => {
   const user = new User(userData);
   await user.save();
-  const token = genToken(user);
-  return { user, token };
+  const {token , refreshToken} = genToken(user);
+  return { user, token, refreshToken };
 };
 
 export const loginUser = async ({ email, password }) => {
@@ -20,8 +20,8 @@ export const loginUser = async ({ email, password }) => {
   if (!isMatch) {
     return { user: null, token: null };
   }
-  const token = genToken(user);
-  return { user, token };
+  const {token , refreshToken} = genToken(user);
+  return { user, token, refreshToken };
 };
 
 export const resetPassword = async (email) => {
@@ -53,3 +53,17 @@ export const resetPasswordConfirm = async (token, newPassword) => {
 }
 
 export const findUserByEmail = (email) => User.findOne({ email });
+
+export const findUserByRefreshToken =async (refreshToken) =>{ 
+  let user =verifyToken(refreshToken);
+  console.log(1,user);
+  
+  if(!user) {
+    return null;
+  }
+   user = await User.findById(user.id);
+  if(!user) {
+    return null;
+  }
+  return user;
+}
