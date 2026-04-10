@@ -15,9 +15,11 @@ export const createCategory = async (req, res, next) => {
 
 export const getAllCategories = async (req, res, next) => {
   const categories = await Category.find({
-    $or: [{ user: null }, { user: req.user.id }]
+    $or: [{ user: null }, { user: req.user.id }],
   });
-  res.status(200).json({ success: true, count: categories.length, data: categories });
+  res
+    .status(200)
+    .json({ success: true, count: categories.length, data: categories });
 };
 
 export const getCategoryById = async (req, res, next) => {
@@ -26,7 +28,7 @@ export const getCategoryById = async (req, res, next) => {
 
   if (!category) return next(createError(404, "Category not found"));
 
-  if (category.user && category.user.toString() !== req.user.id) {
+  if (category.user && category.user.toString() !== req.user.id.toString()) {
     return next(createError(403, "Not authorized to access this category"));
   }
 
@@ -39,13 +41,13 @@ export const updateCategory = async (req, res, next) => {
 
   if (!category) return next(createError(404, "Category not found"));
 
-  if (!category.user || category.user.toString() !== req.user.id) {
+  if (!category.user || category.user.toString() !== req.user.id.toString()) {
     return next(createError(403, "Not authorized to update this category"));
   }
 
   const updatedCategory = await Category.findByIdAndUpdate(id, req.body, {
     new: true,
-    runValidators: true
+    runValidators: true,
   });
 
   res.status(200).json({ success: true, data: updatedCategory });
@@ -57,11 +59,13 @@ export const deleteCategory = async (req, res, next) => {
 
   if (!category) return next(createError(404, "Category not found"));
 
-  if (!category.user || category.user.toString() !== req.user.id) {
+  if (!category.user || category.user.toString() !== req.user.id.toString()) {
     return next(createError(403, "Not authorized to delete this category"));
   }
 
   await Category.findByIdAndDelete(id);
 
-  return res.status(200).json({ success: true, message: "Category deleted successfully" });
+  return res
+    .status(200)
+    .json({ success: true, message: "Category deleted successfully" });
 };
