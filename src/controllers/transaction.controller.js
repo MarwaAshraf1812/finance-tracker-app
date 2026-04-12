@@ -2,6 +2,7 @@ import Transaction from "../models/transaction.model.js";
 import Budget from "../models/budget.model.js";
 import { APIFeatures } from "../utils/apiFeatures.js";
 import { createError } from "../utils/error.js";
+import { createNotification } from "../services/notification.service.js";
 
 /* 
 @desc    Create a new transaction
@@ -22,7 +23,13 @@ export const createTransaction = async (req, res, next) => {
   });
 
   let message = "Transaction created successfully";
-  let alert = null;
+
+  // Create notification for the transaction
+  await createNotification({
+    user: req.user.id,
+    title: type === "expense" ? "expense_added" : "income_added",
+    message: `${type === "expense" ? "Expense" : "Income"} of ${amount} added: ${description || "No description"}`,
+  });
 
   // Track spending vs budget if it is an expense
   if (type === "expense") {
@@ -45,9 +52,17 @@ export const createTransaction = async (req, res, next) => {
       await budget.save();
 
       if (budget.spent > budget.amount) {
-        alert = `Warning: You have exceeded your budget! Budget Limit: ${budget.amount}, Spent: ${budget.spent}`;
+        await createNotification({
+          user: req.user.id,
+          title: "budget_alert",
+          message: `Warning: You have exceeded your budget! Budget Limit: ${budget.amount}, Spent: ${budget.spent}`,
+        });
       } else if (budget.spent > budget.amount * 0.9) {
-        alert = `Warning: You are very close to exceeding your budget. Budget Limit: ${budget.amount}, Spent: ${budget.spent}`;
+        await createNotification({
+          user: req.user.id,
+          title: "budget_alert",
+          message: `Warning: You are very close to exceeding your budget. Budget Limit: ${budget.amount}, Spent: ${budget.spent}`,
+        });
       }
     }
   }
@@ -55,7 +70,6 @@ export const createTransaction = async (req, res, next) => {
   res.status(201).json({
     success: true,
     message,
-    alert,
     data: transaction,
   });
 };
@@ -148,8 +162,6 @@ export const updateTransaction = async (req, res, next) => {
 
   await transaction.save();
 
-  let alert = null;
-  
   if (transaction.type === "expense") {
     const newDate = new Date(transaction.date);
     const newMonth = newDate.getMonth() + 1;
@@ -166,9 +178,17 @@ export const updateTransaction = async (req, res, next) => {
       await newBudget.save();
 
       if (newBudget.spent > newBudget.amount) {
-        alert = `Warning: You have exceeded your budget! Budget Limit: ${newBudget.amount}, Spent: ${newBudget.spent}`;
+        await createNotification({
+          user: req.user.id,
+          title: "budget_alert",
+          message: `Warning: You have exceeded your budget! Budget Limit: ${newBudget.amount}, Spent: ${newBudget.spent}`,
+        });
       } else if (newBudget.spent > newBudget.amount * 0.9) {
-        alert = `Warning: You are very close to exceeding your budget. Budget Limit: ${newBudget.amount}, Spent: ${newBudget.spent}`;
+        await createNotification({
+          user: req.user.id,
+          title: "budget_alert",
+          message: `Warning: You are very close to exceeding your budget. Budget Limit: ${newBudget.amount}, Spent: ${newBudget.spent}`,
+        });
       }
     }
   }
@@ -176,7 +196,6 @@ export const updateTransaction = async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "Transaction updated successfully",
-    alert,
     data: transaction,
   });
 };

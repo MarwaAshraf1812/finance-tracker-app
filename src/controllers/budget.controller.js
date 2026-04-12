@@ -1,6 +1,7 @@
 import Budget from "../models/budget.model.js";
 import { APIFeatures } from "../utils/apiFeatures.js";
 import { createError } from "../utils/error.js";
+import { createNotification } from "../services/notification.service.js";
 
 /*
 @desc    Create a new budget
@@ -92,14 +93,16 @@ export const updateBudget = async (req, res, next) => {
     return next(createError(404, "Budget not found"));
   }
 
-  let alert = null;
   if (budget.spent > budget.amount) {
-    alert = "Warning: Current spent amount exceeds the new budget limit.";
+    await createNotification({
+      user: req.user.id,
+      title: "budget_alert",
+      message: `Warning: Current spent amount (${budget.spent}) exceeds the new budget limit (${budget.amount}).`,
+    });
   }
 
   res.status(200).json({
     success: true,
-    alert,
     data: budget,
   });
 };
