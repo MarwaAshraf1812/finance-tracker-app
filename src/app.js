@@ -16,6 +16,7 @@ import recurringRoutes from "./routes/recurringTransaction.routes.js";
 import { startRecurringJob } from "./utils/recurringCron.js";
 import notificationRoutes from "./routes/notification.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
+import reportsRoutes from "./routes/reports.routes.js";
 
 const app = express();
 
@@ -51,6 +52,7 @@ app.use("/api/v1/recurring", recurringRoutes);
 app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/admin", adminUserRoutes);
 app.use("/api/v1/admin/analytics", adminRoutes);
+app.use("/api/v1/reports", reportsRoutes);
 
 app.use((req, res, next) => {
   res.status(404).json({ success: false, message: "Route not found" });
