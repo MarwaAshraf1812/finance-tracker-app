@@ -17,8 +17,13 @@ import { startRecurringJob } from "./utils/recurringCron.js";
 import notificationRoutes from "./routes/notification.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import reportsRoutes from "./routes/reports.routes.js";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./config/swagger.js";
 
 const app = express();
+
+//http://localhost:5000/api-docs
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 connectDB();
 
