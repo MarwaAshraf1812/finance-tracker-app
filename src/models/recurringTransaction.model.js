@@ -1,5 +1,123 @@
 import mongoose from "mongoose";
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     RecurringTransaction:
+ *       type: object
+ *       required:
+ *         - user
+ *         - amount
+ *         - type
+ *         - category
+ *         - frequency
+ *         - nextDate
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: "65f1c2a3"
+ *         user:
+ *           type: string
+ *           example: "64a8c2b1"
+ *         amount:
+ *           type: number
+ *           example: 1000
+ *         type:
+ *           type: string
+ *           enum: [income, expense]
+ *           example: "expense"
+ *         category:
+ *           type: string
+ *           example: "65f1c2a3"
+ *         frequency:
+ *           type: string
+ *           enum: [daily, weekly, monthly]
+ *           example: "monthly"
+ *         nextDate:
+ *           type: string
+ *           format: date-time
+ *           example: "2024-05-01T00:00:00.000Z"
+ *         description:
+ *           type: string
+ *           example: "Monthly rent"
+ *         active:
+ *           type: boolean
+ *           default: true
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *
+ *     CreateRecurringInput:
+ *       type: object
+ *       required:
+ *         - amount
+ *         - type
+ *         - category
+ *         - frequency
+ *         - nextDate
+ *       properties:
+ *         amount:
+ *           type: number
+ *         type:
+ *           type: string
+ *           enum: [income, expense]
+ *         category:
+ *           type: string
+ *         frequency:
+ *           type: string
+ *           enum: [daily, weekly, monthly]
+ *         nextDate:
+ *           type: string
+ *           format: date-time
+ *         description:
+ *           type: string
+ *
+ *     UpdateRecurringInput:
+ *       type: object
+ *       properties:
+ *         amount:
+ *           type: number
+ *         type:
+ *           type: string
+ *           enum: [income, expense]
+ *         category:
+ *           type: string
+ *         frequency:
+ *           type: string
+ *           enum: [daily, weekly, monthly]
+ *         nextDate:
+ *           type: string
+ *           format: date-time
+ *         description:
+ *           type: string
+ *         active:
+ *           type: boolean
+ *
+ *     RecurringResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *         data:
+ *           $ref: '#/components/schemas/RecurringTransaction'
+ *
+ *     RecurringListResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *         count:
+ *           type: number
+ *         data:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/RecurringTransaction'
+ */
+
 const recurringTransactionSchema = new mongoose.Schema(
   {
     user: {
